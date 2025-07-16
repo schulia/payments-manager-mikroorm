@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { MikroORM, EntityManager } from '@mikro-orm/core';
 import { Payout } from '../modules/payouts.entity'; // Adjust path as needed
 import { createTransaction } from '../external/transactions';
 import { User } from '../modules/user.entity'; // Adjust path as needed
@@ -38,6 +37,17 @@ export const createPayout = async (req: Request, res: Response): Promise<void> =
     res.status(500).json({ error: 'Failed to create payout' });
   }
 };
+
+export const getPayouts = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const orm = getORM(); // Get the shared instance
+        const em = orm.em.fork();
+        const payouts = await em.find(Payout, {});
+        res.status(200).json(payouts);
+    } catch (error) {
+        console.error('Error getting payouts:', error);
+        res.status(500).json({ error: 'Failed to get payouts' });
+}}
 
 // export const getPayoutById = async (req: Request, res: Response, orm: MikroORM): Promise<void> => {
 //   const { id } = req.params;

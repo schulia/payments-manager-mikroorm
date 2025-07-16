@@ -5,8 +5,9 @@ let orm: MikroORM;
 export const initializeORM = async (config: any) => {
   if (!orm) {
     orm = await MikroORM.init(config);
-    console.log(orm.em); // access EntityManager via `em` property
-console.log(orm.schema);
+    // console.log(orm.em); // access EntityManager via `em` property
+    console.log('schema initialized');
+    // console.log(orm.schema);
   }
   return orm;
 };

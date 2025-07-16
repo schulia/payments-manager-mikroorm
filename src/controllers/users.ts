@@ -10,6 +10,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
     const orm = getORM(); // Get the shared instance
     const em = orm.em.fork();
     const users = await em.find(User, {});
+    console.log('resutls', users);
     res.status(200).json(users);
   } catch (error) {
     console.error('Error getting users:', error);

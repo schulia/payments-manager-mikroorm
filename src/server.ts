@@ -1,6 +1,6 @@
 import app from './app';
 // import { MikroORM } from '@mikro-orm/sqlite'; // or any other driver package
-import config from '../mikro-orm.config';
+import config from '../mikro-orm.config.js';
 import { initializeORM } from './orm';
 const PORT = process.env.PORT || 3000;
 
