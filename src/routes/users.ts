@@ -5,6 +5,6 @@ const router = Router();
 
 router.get('/', userController.getUsers);
 router.post('/', userController.createUser);
-router.get('/:userId/balance', userController.getUserBalance);
+// router.get('/:userId/balance', userController.getUserBalance);
 
 export default router;

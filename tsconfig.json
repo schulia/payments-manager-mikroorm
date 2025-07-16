@@ -1,13 +1,20 @@
 {
   "compilerOptions": {
-    "target": "es2016",
+    "target": "ES6",
     "module": "commonjs",
+        "declaration": false,
+		"rootDir": ".",
+		"resolveJsonModule": true,
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,  
+    "allowJs": true,
+    "checkJs": false,
   },
-  "include": ["./**/*.ts"],
+  "include": ["./**/*.ts", "mikro-orm.config.js"],
   "exclude": ["node_modules"]
 }

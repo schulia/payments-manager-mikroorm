@@ -1,9 +1,24 @@
-import { Sequelize } from 'sequelize';
+import { MikroORM } from '@mikro-orm/core';
+import config from '../../mikro-orm.config';
 
-const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: './database.sqlite',
-  logging: false
-});
+let orm: MikroORM;
 
-export default sequelize;
+export const initializeDatabase = async (): Promise<MikroORM> => {
+  if (!orm) {
+    orm = await MikroORM.init(config);
+  }
+  return orm;
+};
+
+export const getDatabase = (): MikroORM => {
+  if (!orm) {
+    throw new Error('Database not initialized. Call initializeDatabase first.');
+  }
+  return orm;
+};
+
+export const closeDatabase = async (): Promise<void> => {
+  if (orm) {
+    await orm.close();
+  }
+};
