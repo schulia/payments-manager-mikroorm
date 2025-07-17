@@ -36,9 +36,7 @@ const createUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         const em = orm.em.fork();
         const newUser = em.create(user_entity_1.User, {
-            name, email,
-            createdAt: '',
-            updatedAt: ''
+            name, email
         });
         yield em.persistAndFlush(newUser);
         res.status(201).json(newUser);

@@ -31,9 +31,7 @@ const createPayout = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const em = orm.em.fork();
         const user = yield em.findOneOrFail(user_entity_1.User, { id: userId });
         const newPayout = em.create(payouts_entity_1.Payout, {
-            currency, amount, transactionId, user,
-            createdAt: '',
-            updatedAt: ''
+            currency, amount, transactionId, user
         });
         yield em.persistAndFlush(newPayout);
         res.status(201).json(newPayout);

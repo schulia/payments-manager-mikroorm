@@ -13,11 +13,11 @@ export class User {
   @Unique()
   email!: string;
 
-  @Property({ onCreate: () => new Date() })
-  createdAt: Date = new Date();
+  @Property({ fieldName: 'createdAt' , onCreate: () => new Date() })
+  created_at: Date = new Date();
 
-  @Property({ onCreate: () => new Date(), onUpdate: () => new Date() })
-  updatedAt: Date = new Date();
+  @Property({ fieldName: 'updatedAt', onCreate: () => new Date(), onUpdate: () => new Date() })
+  updated_at: Date = new Date();
 
   constructor(name: string, email: string) {
     this.name = name;

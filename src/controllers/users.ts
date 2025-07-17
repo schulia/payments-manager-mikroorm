@@ -29,9 +29,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     
     const em = orm.em.fork();
     const newUser = em.create(User, {
-      name, email,
-      createdAt: '',
-      updatedAt: ''
+      name, email, created_at: 'lLll', updated_at: 'Lll'
     });
     await em.persistAndFlush(newUser);
     
