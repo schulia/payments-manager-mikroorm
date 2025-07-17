@@ -73,8 +73,8 @@
           "length": 1,
           "mappedType": "character"
         },
-        "auth_members": {
-          "name": "auth_members",
+        "auth_member": {
+          "name": "auth_member",
           "type": "CHARACTER VARYING",
           "unsigned": false,
           "autoincrement": false,

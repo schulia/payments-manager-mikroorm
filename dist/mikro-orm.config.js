@@ -4,7 +4,7 @@ const { defineConfig } = require('@mikro-orm/sqlite');
 const { TsMorphMetadataProvider } = require('@mikro-orm/reflection');
 const sqlite_1 = require("@mikro-orm/sqlite");
 exports.default = defineConfig({
-    dbName: 'sqlite.db',
+    dbName: 'database.sqlite',
     driver: sqlite_1.SqliteDriver,
     // entities: ['dist/**/*.entity.js'],
     entities: ['src/**/*.entity.ts'], // Source files are in src/
