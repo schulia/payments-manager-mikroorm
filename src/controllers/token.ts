@@ -2,6 +2,8 @@ import { Payout } from "../modules/payouts.entity";
 import { User } from "../modules/user.entity";
 import { getORM } from '../orm';
 import { OcpiTokens } from "../modules/ocpitoken.entity"; // Adjust path as needed
+import { Request, Response } from 'express';
+import { SqlEntityManager } from '@mikro-orm/sqlite';
 
 const getPayouts = async (id: string): Promise<Payout[]> => {
     const orm = getORM(); // Get the shared instance
@@ -17,10 +19,14 @@ const getUsers = async (id:string ): Promise<User[]> => {
     return users;
 }       
 
-const getOcpiTokens = async (id: number): Promise<OcpiTokens[]> => {
+export const getOcpiTokens = async (req: Request, res: Response): Promise<void> => {
+    const {id}  = req.params; // Assuming id is passed as a route parameter
+    const numericId = parseInt(id);
     const orm = getORM(); // Get the shared instance
-    const em = orm.em.fork(); 
-    const tokens = await em.find(OcpiTokens, { id });
-    return tokens;
+    const em = orm.em.fork() as SqlEntityManager;
+    const token = await em.createQueryBuilder(OcpiTokens).select('*').where({ id: numericId });
+    console.log('token', token);
+    const tokens = await em.find(OcpiTokens, { id: numericId });
+    res.status(200).json(tokens);
 }   
 
