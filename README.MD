@@ -24,3 +24,12 @@ Get User Balance
 curl --location --request GET 'http://localhost:3000/api/users/:userId/balance' \
 
 The other endpoints are CRUD endpoints with no business logic
+
+
+MikroORM 
+
+generate the queries from entities : 
+npx mikro-orm schema:create --dump 
+
+generate entities from db: 
+npx  mikro-orm generate-entities --dump

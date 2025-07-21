@@ -1,4 +1,5 @@
-import { Entity, PrimaryKey, Property, Unique } from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property, Unique, OneToMany, Collection } from '@mikro-orm/core';
+import { OcpiTokens } from './ocpitoken.entity';
 import { v4 } from 'uuid';
 
 @Entity({ tableName: 'users' })
@@ -18,6 +19,9 @@ export class User {
 
   @Property({ fieldName: 'updatedAt', onCreate: () => new Date(), onUpdate: () => new Date() })
   updated_at: Date = new Date();
+
+  // @OneToMany(() => OcpiTokens, token => token.user)
+  // tokens = new Collection<OcpiTokens>(this);
 
   constructor(name: string, email: string) {
     this.name = name;

@@ -1,4 +1,5 @@
-import { Entity, Property, PrimaryKey } from '@mikro-orm/core';
+import { Entity, Property, PrimaryKey, ManyToOne } from '@mikro-orm/core';
+import { User } from './user.entity';
 
 @Entity()
 export class OcpiTokens {
@@ -47,5 +48,8 @@ export class OcpiTokens {
 
   @Property({ columnType: 'TIMESTAMP WITHOUT TIME ZONE' })
   lastUpdated!: Date;
+
+  @ManyToOne(() => User, { fieldName: 'authId', referenceColumnName: 'email' })
+  user!: User;
 
 }
