@@ -30,6 +30,7 @@ MikroORM
 
 generate the queries from entities : 
 npx mikro-orm schema:create --dump 
+npx mikro-orm schema:update --dump 
 
 generate entities from db: 
 npx  mikro-orm generate-entities --dump

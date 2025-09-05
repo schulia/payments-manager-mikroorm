@@ -37,11 +37,11 @@ export const getOcpiTokensByUserEmail = async (req: Request, res: Response): Pro
     const orm = getORM(); // Get the shared instance
     const em = orm.em.fork() as SqlEntityManager;
 
-    const qb =  em.createQueryBuilder(OcpiTokens, 'ot');
+  const qb =  em.createQueryBuilder(OcpiTokens, 'ot');
   const tokens = await qb
   .select(['ot.*', 'u.*'])
   .join('users', 'u', { 'ot.auth_id': { $eq: { 'u.email': true } } })
-  .where({ 'u.email': email })
+  .where({ 'u.email': email , 'uid.lala': { $isNull: true } })
   .getResult();
     res.status(200).json(tokens);
 }

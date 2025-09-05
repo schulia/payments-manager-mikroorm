@@ -10,20 +10,23 @@ export class Payout {
   @Property({ default: 'EUR' })
   currency: string = 'EUR';
 
+  @Property({ type: 'character', columnType: 'CHARACTER VARYING', nullable: true })
+  description?: string;
+
   @Property({ type: 'decimal', precision: 10, scale: 2, default: 0.00 })
   amount: number = 0.00;
 
-  @Property({ type: 'uuid' })
+  @Property({ type: 'uuid' , fieldName: 'transactionId'})
   @Unique()
   transactionId!: string;
 
   @ManyToOne(() => User)
   user!: User;
 
-  @Property({ onCreate: () => new Date() })
+  @Property({ onCreate: () => new Date() ,fieldName: 'createdAt'})
   createdAt: Date = new Date();
 
-  @Property({ onCreate: () => new Date(), onUpdate: () => new Date() })
+  @Property({ onCreate: () => new Date(), onUpdate: () => new Date(), fieldName: 'updatedAt' })
   updatedAt: Date = new Date();
 
   constructor(transactionId: string, user: User, amount?: number, currency?: string) {

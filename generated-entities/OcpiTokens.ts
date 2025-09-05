@@ -1,10 +1,9 @@
-import { Entity, Property, PrimaryKey, ManyToOne } from '@mikro-orm/core';
-import { User } from './user.entity';
+import { Entity, Property } from '@mikro-orm/core';
 
 @Entity()
 export class OcpiTokens {
 
-  @PrimaryKey()
+  @Property()
   id!: number;
 
   @Property({ type: 'smallint', columnType: 'SMALLINT', nullable: true })
@@ -26,9 +25,6 @@ export class OcpiTokens {
   authId!: string;
 
   @Property({ type: 'character', columnType: 'CHARACTER VARYING' })
-  authMember!: string;
-
-  @Property({ type: 'character', columnType: 'CHARACTER VARYING' })
   type!: string;
 
   @Property({ type: 'character', columnType: 'CHARACTER VARYING' })
@@ -40,20 +36,16 @@ export class OcpiTokens {
   @Property()
   ocpiclientid!: bigint;
 
-  @Property()
-  something!: bigint;
-
-
-  @Property({ columnType: 'TIMESTAMP WITHOUT TIME ZONE', nullable: true , fieldName: 'updatedAt' })
+  @Property({ columnType: 'TIMESTAMP WITHOUT TIME ZONE', nullable: true })
   updatedat?: Date;
 
-  @Property({ columnType: 'TIMESTAMP WITHOUT TIME ZONE', nullable: true, fieldName: 'createdAt'  })
+  @Property({ columnType: 'TIMESTAMP WITHOUT TIME ZONE', nullable: true })
   createdat?: Date;
 
   @Property({ columnType: 'TIMESTAMP WITHOUT TIME ZONE' })
   lastUpdated!: Date;
 
-  @ManyToOne(() => User, { fieldName: 'authId', referenceColumnName: 'email' })
-  user!: User;
+  @Property({ type: 'character', columnType: 'CHARACTER VARYING' })
+  authMember!: string;
 
 }
