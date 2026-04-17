@@ -1,29 +1,24 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getTransactionsByUserId = exports.createTransaction = exports.TransactionType = void 0;
-const uuid_1 = require("uuid");
+import { v4 as uuidv4 } from 'uuid';
 const DEFAULT_DATE = "2023-03-14T00:00:00Z";
-var TransactionType;
+export var TransactionType;
 (function (TransactionType) {
     TransactionType["PAYOUT"] = "payout";
     TransactionType["SPENT"] = "spent";
     TransactionType["EARNED"] = "earned";
-})(TransactionType || (exports.TransactionType = TransactionType = {}));
-const createTransaction = (userId, amount) => {
+})(TransactionType || (TransactionType = {}));
+export const createTransaction = (userId, amount) => {
     return {
-        id: (0, uuid_1.v4)(),
+        id: uuidv4(),
         userId,
         type: TransactionType.PAYOUT,
         amount,
         createdAt: DEFAULT_DATE
     };
 };
-exports.createTransaction = createTransaction;
-const getTransactionsByUserId = (userId) => {
+export const getTransactionsByUserId = (userId) => {
     const allTransactions = getAllTransaction(userId);
     return allTransactions.filter(transaction => transaction.userId === userId);
 };
-exports.getTransactionsByUserId = getTransactionsByUserId;
 const getTransactionsByUserIdAndDate = (userId, startDate, endDate) => {
     const allTransactions = getAllTransaction(userId);
     return allTransactions.filter(transaction => {

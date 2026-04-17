@@ -1,31 +1,19 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getORM = exports.initializeORM = void 0;
-const core_1 = require("@mikro-orm/core");
+import { MikroORM } from '@mikro-orm/core';
 let orm;
-const initializeORM = (config) => __awaiter(void 0, void 0, void 0, function* () {
+export const initializeORM = async (config) => {
     if (!orm) {
-        orm = yield core_1.MikroORM.init(config);
+        orm = await MikroORM.init(config);
         // console.log(orm.em); // access EntityManager via `em` property
+        const tables = await orm.em.getConnection().execute('SELECT name FROM sqlite_master WHERE type="table"');
+        console.log('Tables:', tables);
         console.log('schema initialized');
-        // console.log(orm.schema);
+        console.log(orm.em);
     }
     return orm;
-});
-exports.initializeORM = initializeORM;
-const getORM = () => {
+};
+export const getORM = () => {
     if (!orm) {
         throw new Error('ORM not initialized. Call initializeORM first.');
     }
     return orm;
 };
-exports.getORM = getORM;

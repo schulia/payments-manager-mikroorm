@@ -1,7 +1,7 @@
-import app from './app';
+import app from './app.js';
 // import { MikroORM } from '@mikro-orm/sqlite'; // or any other driver package
 import config from '../mikro-orm.config.js';
-import { initializeORM } from './orm';
+import { initializeORM } from './orm.js';
 // import { RequestContext } from '@mikro-orm/core';
 const PORT = process.env.PORT || 3000;
 

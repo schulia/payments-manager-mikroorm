@@ -1,27 +1,15 @@
-"use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.getPayouts = exports.createPayout = void 0;
-const payouts_entity_1 = require("../modules/payouts.entity"); // Adjust path as needed
-const transactions_1 = require("../external/transactions");
-const user_entity_1 = require("../modules/user.entity"); // Adjust path as needed
-const orm_1 = require("../orm");
-const createPayout = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+import { Payout } from '../modules/payouts.entity.js';
+import { createTransaction } from '../external/transactions.js';
+import { User } from '../modules/user.entity.js';
+import { getORM } from '../orm.js';
+export const createPayout = async (req, res) => {
     const { currency, amount, userId } = req.body;
-    const orm = (0, orm_1.getORM)(); // Get the shared instance
+    const orm = getORM(); // Get the shared instance
     if (!currency || !amount || !userId) {
         res.status(400).json({ error: 'Insufficient data to create payout' });
         return;
     }
-    const transaction = (0, transactions_1.createTransaction)(userId, amount);
+    const transaction = createTransaction(userId, amount);
     if (!transaction) {
         res.status(500).json({ error: 'Failed to create transaction' });
         return;
@@ -29,32 +17,32 @@ const createPayout = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     const transactionId = transaction.id;
     try {
         const em = orm.em.fork();
-        const user = yield em.findOneOrFail(user_entity_1.User, { id: userId });
-        const newPayout = em.create(payouts_entity_1.Payout, {
-            currency, amount, transactionId, user
+        const user = await em.findOneOrFail(User, { id: userId });
+        const newPayout = em.create(Payout, {
+            currency, amount, transactionId, user,
+            createdAt: '',
+            updatedAt: ''
         });
-        yield em.persistAndFlush(newPayout);
+        await em.persistAndFlush(newPayout);
         res.status(201).json(newPayout);
     }
     catch (error) {
         console.error('Error creating payout:', error);
         res.status(500).json({ error: 'Failed to create payout' });
     }
-});
-exports.createPayout = createPayout;
-const getPayouts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+};
+export const getPayouts = async (req, res) => {
     try {
-        const orm = (0, orm_1.getORM)(); // Get the shared instance
+        const orm = getORM(); // Get the shared instance
         const em = orm.em.fork();
-        const payouts = yield em.find(payouts_entity_1.Payout, {});
+        const payouts = await em.find(Payout, {});
         res.status(200).json(payouts);
     }
     catch (error) {
         console.error('Error getting payouts:', error);
         res.status(500).json({ error: 'Failed to get payouts' });
     }
-});
-exports.getPayouts = getPayouts;
+};
 // export const getPayoutById = async (req: Request, res: Response, orm: MikroORM): Promise<void> => {
 //   const { id } = req.params;
 //   if (!id) {

@@ -1,7 +1,7 @@
-import { Payout } from "../modules/payouts.entity";
-import { User } from "../modules/user.entity";
-import { getORM } from '../orm';
-import { OcpiTokens } from "../modules/ocpitoken.entity"; // Adjust path as needed
+import { Payout } from "../modules/payouts.entity.js";
+import { User } from "../modules/user.entity.js";
+import { getORM } from '../orm.js';
+import { OcpiTokens } from "../modules/ocpitoken.entity.js";
 import { Request, Response } from 'express';
 import { SqlEntityManager } from '@mikro-orm/sqlite';
 

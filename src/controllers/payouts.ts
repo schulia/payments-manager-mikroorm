@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { Payout } from '../modules/payouts.entity'; // Adjust path as needed
-import { createTransaction } from '../external/transactions';
-import { User } from '../modules/user.entity'; // Adjust path as needed
-import { getORM } from '../orm';
+import { Payout } from '../modules/payouts.entity.js';
+import { createTransaction } from '../external/transactions.js';
+import { User } from '../modules/user.entity.js';
+import { getORM } from '../orm.js';
 
 
 export const createPayout = async (req: Request, res: Response): Promise<void> => {
