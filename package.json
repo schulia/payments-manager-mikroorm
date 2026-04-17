@@ -1,12 +1,17 @@
 {
   "name": "payments-manager",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
+  "main": "dist/server.js",
   "scripts": {
     "start": "node dist/server.js",
-    "dev": "nodemon --exec ts-node src/server.ts",
+    "dev": "node --loader ts-node/esm src/server.ts",
     "build": "tsc",
-    "test": "mocha -r ts-node/register 'tests/**/*.test.ts'"
+    "test": "NODE_OPTIONS='--loader ts-node/esm' mocha 'tests/**/*.test.ts'"
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   },
   "keywords": [],
   "author": "",

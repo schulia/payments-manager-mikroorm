@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
-import userRoutes from './routes/users';
-import payoutRoutes from './routes/payouts';
-import tokenRoutes from './routes/tokens';
+import userRoutes from './routes/users.js';
+import payoutRoutes from './routes/payouts.js';
+import tokenRoutes from './routes/tokens.js';
 
 const app = express();
 

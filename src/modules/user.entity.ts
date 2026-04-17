@@ -1,5 +1,5 @@
 import { Entity, PrimaryKey, Property, Unique, OneToMany, Collection } from '@mikro-orm/core';
-import { OcpiTokens } from './ocpitoken.entity';
+import { OcpiTokens } from './ocpitoken.entity.js';
 import { v4 } from 'uuid';
 
 @Entity({ tableName: 'users' })

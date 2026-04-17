@@ -1,5 +1,5 @@
 import { Entity, Property, PrimaryKey, ManyToOne } from '@mikro-orm/core';
-import { User } from './user.entity';
+import { User } from './user.entity.js';
 
 @Entity()
 export class OcpiTokens {

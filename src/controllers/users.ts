@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { getORM } from '../orm';
-
-import { User } from '../modules/user.entity'; // Adjust path as neededimport {getTransactionsByUserId} from '../external/transactions';
+import { getORM } from '../orm.js';
+import { User } from '../modules/user.entity.js';
+import { getTransactionsByUserId } from '../external/transactions.js';
 
 
 
@@ -40,23 +40,23 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
-// export const getUserBalance = async (req: Request, res: Response): Promise<any> => {
-//   //assuming balance = earned - spent - payouts
+export const getUserBalance = async (req: Request, res: Response): Promise<any> => {
+  //assuming balance = earned - spent - payouts
 
-//   const balance = calculateUserBalance(req.params.userId);
-//   return res.status(200).json({ balance });
-// }
+  const balance = calculateUserBalance(req.params.userId);
+  return res.status(200).json({ balance });
+}
 
-// export const calculateUserBalance =  (userId: string): any => {
-//   const userTransactions = getTransactionsByUserId(userId);
+export const calculateUserBalance =  (userId: string): any => {
+  const userTransactions = getTransactionsByUserId(userId);
 
-//   const totalEarned = userTransactions.filter(transaction => transaction.type === 'earned')
-//     .reduce((acc, transaction) => acc + transaction.amount, 0);
-//   const totalSpent = userTransactions.filter(transaction => transaction.type === 'spent')
-//     .reduce((acc, transaction) => acc + transaction.amount, 0);
-//   const totalPayouts = userTransactions.filter(transaction => transaction.type === 'payout')
-//     .reduce((acc, transaction) => acc + transaction.amount, 0);
-//   const balance = totalEarned - totalSpent - totalPayouts;
-//   return balance;
+  const totalEarned = userTransactions.filter(transaction => transaction.type === 'earned')
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+  const totalSpent = userTransactions.filter(transaction => transaction.type === 'spent')
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+  const totalPayouts = userTransactions.filter(transaction => transaction.type === 'payout')
+    .reduce((acc, transaction) => acc + transaction.amount, 0);
+  const balance = totalEarned - totalSpent - totalPayouts;
+  return balance;
 
-// }
+}

@@ -1,6 +1,6 @@
 import { Entity, PrimaryKey, Property, ManyToOne, Unique } from '@mikro-orm/core';
 import { v4 } from 'uuid';
-import { User } from './user.entity';
+import { User } from './user.entity.js';
 
 @Entity({ tableName: 'payouts' })
 export class Payout {
