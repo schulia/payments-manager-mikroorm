@@ -15,9 +15,6 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] running tests"
 # test
 npm test
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] building the project..."
-npm run build
-
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] starting the server with PM2..."
 # start with PM2 (process manager) if available, otherwise use npm start
 if command -v pm2 &> /dev/null; then
