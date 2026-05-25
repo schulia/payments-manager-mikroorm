@@ -24,14 +24,9 @@ resource "aws_security_group" "app_sg" {
 resource "aws_launch_template" "app_lt" {
   name_prefix   = "${var.name}-lt-"
   image_id      = data.aws_ami.ubuntu.id
-  instance_type = "t2.micro"
+  instance_type = "t3.micro"
 
   security_group_names = [aws_security_group.app_sg.name]
-
-  cpu_options {
-    core_count       = 4
-    threads_per_core = 2
-  }
 
   monitoring {
     enabled = true
@@ -53,6 +48,7 @@ resource "aws_autoscaling_group" "app_asg" {
     id      = aws_launch_template.app_lt.id
     version = "$Latest"
   }
+  availability_zones        = ["eu-north-1a"]
 
   tag {
     key                 = "Name"
