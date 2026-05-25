@@ -1,2 +1,15 @@
 node_modules/
 dist/
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+*.tfstate
+*.tfstate.backup
+*.tfvars
+crash.log
+override.tf
+
+
+# certificates 
+*.pem
