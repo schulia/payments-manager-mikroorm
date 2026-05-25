@@ -1,0 +1,1 @@
+# names and versions of resources
