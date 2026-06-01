@@ -40,6 +40,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
   }
 };
 
+/* eslint-disable */
 export const getUserBalance = async (req: Request, res: Response): Promise<any> => {
   //assuming balance = earned - spent - payouts
 
