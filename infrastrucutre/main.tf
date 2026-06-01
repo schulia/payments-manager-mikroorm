@@ -19,7 +19,7 @@ data "http" "my_ip" {
 }
 
 locals {
-  raw_ip     = chomp(data.http.my_ip.response_body)
+  raw_ip = chomp(data.http.my_ip.response_body)
 }
 
 resource "aws_security_group" "app_sg" {
@@ -34,9 +34,9 @@ resource "aws_security_group" "app_sg" {
   }
 
   ingress {
-    from_port        = 22
-    to_port          = 22
-    protocol         = "tcp"
+    from_port = 22
+    to_port   = 22
+    protocol  = "tcp"
     # cidr_blocks      = ["${local.raw_ip}/32"]
     ipv6_cidr_blocks = ["${local.raw_ip}/128"]
   }
