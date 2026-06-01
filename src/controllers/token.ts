@@ -5,12 +5,14 @@ import { OcpiTokens } from "../modules/ocpitoken.entity.js";
 import { Request, Response } from 'express';
 import { SqlEntityManager } from '@mikro-orm/sqlite';
 
+/* eslint-disable */ 
 const getPayouts = async (id: string): Promise<Payout[]> => {
     const orm = getORM(); // Get the shared instance
     const em = orm.em.fork();
     const payouts = await em.find(Payout, { id });
   return payouts;
 }
+
 
 const getUsers = async (id:string ): Promise<User[]> => {
     const orm = getORM(); // Get the shared instance

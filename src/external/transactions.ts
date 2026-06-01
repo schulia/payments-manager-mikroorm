@@ -31,14 +31,6 @@ export const getTransactionsByUserId = (userId: string): Transaction[] => {
     return allTransactions.filter(transaction => transaction.userId === userId) as Transaction[];
 }
 
-const getTransactionsByUserIdAndDate = (userId: string, startDate: Date, endDate: Date): Transaction[] => {
-    const allTransactions  = getAllTransaction(userId);
-    return allTransactions.filter(transaction => {
-        const transactionDate = new Date(transaction.createdAt);
-        return transactionDate >= startDate && transactionDate <= endDate;
-    }) as  Transaction[];
-}
-
 const getAllTransaction = (userId:string) => {
     return [
         {
