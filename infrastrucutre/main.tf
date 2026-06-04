@@ -10,9 +10,9 @@
 #   }
 # }
 
-# provider "aws" {
-#   region = "eu-north-1"
-# }
+provider "aws" {
+  region = "eu-north-1"
+}
 
 data "http" "my_ip" {
   url = "https://ifconfig.me/ip"
@@ -108,13 +108,20 @@ resource "null_resource" "write_env" {
 }
 
 
-# terraform {
-#   backend "s3" {
-#     bucket  = "app-state"
-#     key     = "global/s3/terraform.tfstate"
-#     encrypt = true
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket  = "payments-manager-mikroorm-tf-state-eu"
+    key     = "global/s3/terraform.tfstate"
+    region  = "eu-north-1"
+    encrypt = true
+  }
+}
+
+resource "aws_iam_user" "the-accounts" {
+  for_each = toset(["Todd", "James", "Alice", "Dottie"])
+  name     = each.key
+}
+
 
 resource "aws_s3_bucket" "tf-state" {
   bucket = "${var.name}-tf-state-eu"
@@ -125,7 +132,7 @@ resource "aws_s3_bucket" "tf-state" {
 }
 
 resource "aws_s3_bucket_versioning" "tf-state" {
-  bucket = aws_s3_bucket.tf-state.id
+  bucket =  "payments-manager-mikroorm-tf-state-eu"
 
   versioning_configuration {
     status = "Enabled"
