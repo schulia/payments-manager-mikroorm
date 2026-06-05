@@ -20,26 +20,29 @@ data "http" "my_ip" {
 
 locals {
   raw_ip = chomp(data.http.my_ip.response_body)
+  ingress_rules = [
+    { port = 8080 },
+    { port = 22 }
+  ]
 }
+
+
 
 resource "aws_security_group" "app_sg" {
   name        = "${var.name}-sg"
   description = "Allow SSH and HTTP access"
 
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = local.ingress_rules
+    content {
+      from_port = ingress.value.port
+      to_port   = ingress.value.port
+      protocol  = "tcp"
+      # cidr_blocks      = ["${local.raw_ip}/32"]
+      ipv6_cidr_blocks = ["${local.raw_ip}/128"]
+    }
   }
 
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-    # cidr_blocks      = ["${local.raw_ip}/32"]
-    ipv6_cidr_blocks = ["${local.raw_ip}/128"]
-  }
 
   egress {
     from_port   = 0
@@ -54,6 +57,7 @@ resource "aws_launch_template" "app_lt" {
   image_id      = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
   key_name      = aws_key_pair.app_key.key_name
+  depends_on    = [aws_security_group.app_sg]
 
   security_group_names = [aws_security_group.app_sg.name]
 
@@ -91,10 +95,14 @@ resource "aws_key_pair" "app_key" {
   public_key = file("~/.ssh/payments-manager.pub")
 }
 
-
-resource "null_resource" "write_env" {
+resource "aws_ssm_parameter" "ec2_public_ip" {
   depends_on = [aws_autoscaling_group.app_asg]
 
+  name  = "/${var.name}/ec2-public-ip"
+  type  = "String"
+  value = data.aws_instances.app_instances.public_ips[0]
+}
+resource "null_resource" "write_env" {
   provisioner "local-exec" {
     command = <<-EOF
       IP=$(aws ec2 describe-instances \
@@ -132,7 +140,7 @@ resource "aws_s3_bucket" "tf-state" {
 }
 
 resource "aws_s3_bucket_versioning" "tf-state" {
-  bucket =  "payments-manager-mikroorm-tf-state-eu"
+  bucket = "payments-manager-mikroorm-tf-state-eu"
 
   versioning_configuration {
     status = "Enabled"
