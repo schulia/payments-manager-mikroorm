@@ -38,8 +38,8 @@ resource "aws_security_group" "app_sg" {
       from_port = ingress.value.port
       to_port   = ingress.value.port
       protocol  = "tcp"
-      # cidr_blocks      = ["${local.raw_ip}/32"]
-      ipv6_cidr_blocks = ["${local.raw_ip}/128"]
+      cidr_blocks      = ["${local.raw_ip}/32"]
+      # ipv6_cidr_blocks = ["${local.raw_ip}/128"]
     }
   }
 
@@ -90,10 +90,24 @@ resource "aws_autoscaling_group" "app_asg" {
   }
 }
 
+resource "tls_private_key" "ed25519-example" {
+  algorithm = "ED25519"
+}
 resource "aws_key_pair" "app_key" {
   key_name   = "${var.name}-key"
-  public_key = file("~/.ssh/payments-manager.pub")
+  public_key = tls_private_key.ed25519-example.public_key_openssh
 }
+
+resource "aws_secretsmanager_secret" "secrets" {
+  name = "${var.name}-secret"
+}
+
+
+resource "aws_secretsmanager_secret_version" "secrets" {
+  secret_id     = aws_secretsmanager_secret.secrets.id
+  secret_string = tls_private_key.ed25519-example.private_key_pem
+}
+# 
 
 resource "aws_ssm_parameter" "ec2_public_ip" {
   depends_on = [aws_autoscaling_group.app_asg]
