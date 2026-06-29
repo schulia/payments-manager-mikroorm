@@ -10,9 +10,9 @@
 #   }
 # }
 
-# provider "aws" {
-#   region = "eu-north-1"
-# }
+provider "aws" {
+  region = "eu-north-1"
+}
 
 data "http" "my_ip" {
   url = "https://ifconfig.me/ip"
@@ -20,26 +20,29 @@ data "http" "my_ip" {
 
 locals {
   raw_ip = chomp(data.http.my_ip.response_body)
+  ingress_rules = [
+    { port = 8080 },
+    { port = 22 }
+  ]
 }
+
+
 
 resource "aws_security_group" "app_sg" {
   name        = "${var.name}-sg"
   description = "Allow SSH and HTTP access"
 
-  ingress {
-    from_port   = 8080
-    to_port     = 8080
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  dynamic "ingress" {
+    for_each = local.ingress_rules
+    content {
+      from_port = ingress.value.port
+      to_port   = ingress.value.port
+      protocol  = "tcp"
+      cidr_blocks      = ["${local.raw_ip}/32"]
+      # ipv6_cidr_blocks = ["${local.raw_ip}/128"]
+    }
   }
 
-  ingress {
-    from_port = 22
-    to_port   = 22
-    protocol  = "tcp"
-    # cidr_blocks      = ["${local.raw_ip}/32"]
-    ipv6_cidr_blocks = ["${local.raw_ip}/128"]
-  }
 
   egress {
     from_port   = 0
@@ -54,6 +57,7 @@ resource "aws_launch_template" "app_lt" {
   image_id      = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
   key_name      = aws_key_pair.app_key.key_name
+  depends_on    = [aws_security_group.app_sg]
 
   security_group_names = [aws_security_group.app_sg.name]
 
@@ -86,15 +90,33 @@ resource "aws_autoscaling_group" "app_asg" {
   }
 }
 
+resource "tls_private_key" "ed25519-example" {
+  algorithm = "ED25519"
+}
 resource "aws_key_pair" "app_key" {
   key_name   = "${var.name}-key"
-  public_key = file("~/.ssh/payments-manager.pub")
+  public_key = tls_private_key.ed25519-example.public_key_openssh
+}
+
+resource "aws_secretsmanager_secret" "secrets" {
+  name = "${var.name}-secret"
 }
 
 
-resource "null_resource" "write_env" {
+resource "aws_secretsmanager_secret_version" "secrets" {
+  secret_id     = aws_secretsmanager_secret.secrets.id
+  secret_string = tls_private_key.ed25519-example.private_key_pem
+}
+# 
+
+resource "aws_ssm_parameter" "ec2_public_ip" {
   depends_on = [aws_autoscaling_group.app_asg]
 
+  name  = "/${var.name}/ec2-public-ip"
+  type  = "String"
+  value = data.aws_instances.app_instances.public_ips[0]
+}
+resource "null_resource" "write_env" {
   provisioner "local-exec" {
     command = <<-EOF
       IP=$(aws ec2 describe-instances \
@@ -108,13 +130,20 @@ resource "null_resource" "write_env" {
 }
 
 
-# terraform {
-#   backend "s3" {
-#     bucket  = "app-state"
-#     key     = "global/s3/terraform.tfstate"
-#     encrypt = true
-#   }
-# }
+terraform {
+  backend "s3" {
+    bucket  = "payments-manager-mikroorm-tf-state-eu"
+    key     = "global/s3/terraform.tfstate"
+    region  = "eu-north-1"
+    encrypt = true
+  }
+}
+
+resource "aws_iam_user" "the-accounts" {
+  for_each = toset(["Todd", "James", "Alice", "Dottie"])
+  name     = each.key
+}
+
 
 resource "aws_s3_bucket" "tf-state" {
   bucket = "${var.name}-tf-state-eu"
@@ -125,7 +154,7 @@ resource "aws_s3_bucket" "tf-state" {
 }
 
 resource "aws_s3_bucket_versioning" "tf-state" {
-  bucket = aws_s3_bucket.tf-state.id
+  bucket = "payments-manager-mikroorm-tf-state-eu"
 
   versioning_configuration {
     status = "Enabled"
